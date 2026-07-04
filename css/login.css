@@ -1,0 +1,317 @@
+/* ==========================================================================
+   SENIOR PRO — LOGIN STYLESHEET
+   Reutiliza la misma paleta que styles.css (crema, azul marino, naranja)
+   ========================================================================== */
+
+:root{
+  --color-bg-cream: #FDF6EC;
+  --color-navy: #16264A;
+  --color-navy-dark: #0F1C38;
+  --color-orange: #F5821F;
+  --color-orange-dark: #D9700F;
+  --color-text-main: #1E2A44;
+  --color-text-muted: #5B6B85;
+  --color-white: #FFFFFF;
+  --color-border: #E4E0D8;
+  --color-error: #E0245E;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 4px 14px rgba(22,38,74,0.06);
+  --shadow-hover: 0 8px 22px rgba(22,38,74,0.12);
+  --transition-fast: 0.2s ease;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg-cream);
+  color: var(--color-text-main);
+  line-height: 1.55;
+  font-size: 16px;
+}
+
+a{ text-decoration: none; color: inherit; }
+button{ font-family: inherit; cursor: pointer; }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible{
+  outline: 3px solid var(--color-orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ============ BARRA SUPERIOR ============ */
+.login-topbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+}
+
+.login-back{
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+  transition: color var(--transition-fast);
+}
+.login-back:hover{ color: var(--color-orange-dark); }
+
+.lang-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-orange);
+  color: var(--color-orange-dark);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  transition: background-color var(--transition-fast);
+}
+.lang-btn:hover{ background-color: rgba(245,130,31,0.08); }
+.chevron{ font-size: 12px; }
+
+/* ============ CONTENEDOR PRINCIPAL ============ */
+.login-main{
+  display: flex;
+  justify-content: center;
+  padding: 24px 20px 80px;
+}
+
+.login-card{
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+/* Logo */
+.login-brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 28px;
+}
+
+.brand-logo{
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brand-name-lg{
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--color-navy);
+}
+
+.login-title{
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--color-orange);
+  margin: 0 0 28px;
+}
+
+/* ============ FORMULARIO ============ */
+.login-form{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.form-group{ display: flex; flex-direction: column; gap: 8px; }
+
+.form-label{
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-navy);
+}
+
+.form-label--error{ color: var(--color-error); }
+
+.form-input{
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  color: var(--color-text-main);
+  background-color: var(--color-white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input::placeholder{ color: #A9B2C3; }
+
+.form-input:focus{
+  border-color: var(--color-orange);
+  box-shadow: 0 0 0 3px rgba(245,130,31,0.15);
+  outline: none;
+}
+
+.form-input--error{
+  border-color: var(--color-error);
+}
+
+.form-error{
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-error);
+}
+
+.password-wrapper{ position: relative; }
+
+.password-wrapper .form-input{ padding-right: 44px; }
+
+.toggle-password{
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-text-muted);
+  padding: 4px;
+  line-height: 1;
+  transition: color var(--transition-fast);
+}
+.toggle-password:hover{ color: var(--color-navy); }
+
+.forgot-link{
+  align-self: flex-end;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-orange-dark);
+  margin-top: -8px;
+  transition: color var(--transition-fast);
+}
+.forgot-link:hover{ text-decoration: underline; }
+
+/* Botón principal */
+.btn-login{
+  width: 100%;
+  padding: 15px;
+  background-color: var(--color-orange);
+  color: var(--color-white);
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius-pill);
+  margin-top: 8px;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-login:hover{
+  background-color: var(--color-orange-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ============ SEPARADOR ============ */
+.divider{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 32px 0 24px;
+}
+
+.divider span{
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider em{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  display: inline-block;
+}
+
+/* ============ BOTONES SOCIALES ============ */
+.social-buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.btn-social{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 1.5px solid var(--color-border);
+  background-color: var(--color-white);
+  color: var(--color-text-main);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-social:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-social--facebook{
+  background-color: #4267B2;
+  border-color: #4267B2;
+  color: var(--color-white);
+}
+.btn-social--facebook:hover{ background-color: #35548f; }
+
+.btn-social--google{
+  background-color: var(--color-white);
+  color: var(--color-text-main);
+}
+
+.btn-social--apple{
+  background-color: #000000;
+  border-color: #000000;
+  color: var(--color-white);
+}
+.btn-social--apple:hover{ background-color: #1a1a1a; }
+
+.social-icon{ font-size: 18px; }
+
+/* ============ PIE DE FORMULARIO ============ */
+.signup-text{
+  margin: 28px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.signup-link{
+  font-weight: 700;
+  color: var(--color-orange-dark);
+}
+.signup-link:hover{ text-decoration: underline; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 480px){
+  .login-topbar{ padding: 16px 20px; }
+  .login-main{ padding-top: 12px; }
+}
+
+/* Respeta la preferencia de reducción de movimiento */
+@media (prefers-reduced-motion: reduce){
+  *{ transition: none !important; }
+}

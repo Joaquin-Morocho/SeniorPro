@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingresa | Senior Pro</title>
+<link rel="stylesheet" href="../../css/login.css">
+</head>
+<body>
+
+  <!-- ============ BARRA SUPERIOR ============ -->
+  <header class="login-topbar">
+    <a href="../../index.html" class="login-back">← Volver al inicio</a>
+
+    <div class="lang-select">
+      <button type="button" class="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        Español
+        <span class="chevron" aria-hidden="true">▾</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ CONTENIDO PRINCIPAL ============ -->
+  <main class="login-main">
+    <div class="login-card">
+
+      <!-- Logo -->
+      <a href="../../index.html" class="login-brand" aria-label="Senior Pro - Inicio">
+        <span class="brand-logo" aria-hidden="true">S</span>
+        <span class="brand-name-lg">Senior Pro</span>
+      </a>
+
+      <h1 class="login-title">Ingresa</h1>
+
+      <!-- Formulario -->
+      <form class="login-form" novalidate>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-input"
+            placeholder="Email"
+            autocomplete="email"
+          >
+          <p id="errorEmail" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Contraseña"
+              autocomplete="current-password"
+            >
+            <button type="button" class="toggle-password" aria-label="Mostrar contraseña" aria-pressed="false">
+              👁
+            </button>
+          </div>
+          <p id="errorPassword" class="form-error" hidden></p>
+        </div>
+
+        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+
+        <button type="submit" class="btn-login">Ingresa</button>
+      </form>
+
+      <!-- Separador -->
+      <div class="divider" role="separator">
+        <span></span>
+        <em aria-hidden="true"></em>
+        <span></span>
+      </div>
+
+      <!-- Botones sociales -->
+      <div class="social-buttons">
+        <button type="button" class="btn-social btn-social--facebook">
+          <span class="social-icon" aria-hidden="true">📘</span>
+          Continuar con Facebook
+        </button>
+
+        <button type="button" class="btn-social btn-social--google">
+          <span class="social-icon" aria-hidden="true">🔵</span>
+          Continuar con Google
+        </button>
+
+        <button type="button" class="btn-social btn-social--apple">
+          <span class="social-icon" aria-hidden="true">🍎</span>
+          Continuar con Apple
+        </button>
+      </div>
+
+      <p class="signup-text">
+        ¿Aún no has creado tu cuenta en Senior Pro?
+        <a href="registro.html" class="signup-link">Regístrate</a>
+      </p>
+
+    </div>
+  </main>
+
+  <script>
+    const form = document.querySelector('.login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    // Muestra un mensaje de error debajo de un campo y lo resalta en rojo
+    function mostrarError(idError, idInput, mensaje) {
+      const errorEl = document.getElementById(idError);
+      errorEl.textContent = mensaje;
+      errorEl.hidden = false;
+
+      if (idInput) {
+        document.getElementById(idInput).classList.add('form-input--error');
+      }
+    }
+
+    // Limpia todos los mensajes de error antes de volver a validar
+    function limpiarErrores() {
+      document.querySelectorAll('.form-error').forEach(function (el) {
+        el.hidden = true;
+        el.textContent = '';
+      });
+      document.querySelectorAll('.form-input--error').forEach(function (el) {
+        el.classList.remove('form-input--error');
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      limpiarErrores();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+      let valido = true;
+
+      // Validar email
+      if (email === '') {
+        mostrarError('errorEmail', 'email', 'El correo electrónico es requerido.');
+        valido = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        mostrarError('errorEmail', 'email', 'Ingrese un correo electrónico válido.');
+        valido = false;
+      }
+
+      // Validar contraseña
+      if (password === '') {
+        mostrarError('errorPassword', 'password', 'La contraseña es requerida.');
+        valido = false;
+      }
+
+      // Si todo es válido, redirige al perfil
+      // (aquí normalmente se validaría el login contra un backend real)
+      if (valido) {
+        alert('Bienvenido!!!');
+        window.location.href = '../perfil/perfil.html';
+      }
+    });
+
+    // Mostrar / ocultar contraseña
+    const toggleBtn = document.querySelector('.toggle-password');
+
+    toggleBtn.addEventListener('click', function () {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      toggleBtn.setAttribute('aria-pressed', String(isHidden));
+      toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+  </script>
+
+</body>
+</html>

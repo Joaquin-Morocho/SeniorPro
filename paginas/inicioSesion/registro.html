@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crea una cuenta | Senior Pro</title>
+<link rel="stylesheet" href="../../css/registro.css">
+</head>
+<body>
+
+  <!-- ============ BARRA SUPERIOR ============ -->
+  <header class="register-topbar">
+    <a href="../../index.html" class="register-brand" aria-label="Senior Pro - Inicio">
+      <span class="brand-logo" aria-hidden="true">S</span>
+      <span class="brand-name-lg">Senior Pro</span>
+    </a>
+
+    <div class="lang-select">
+      <button type="button" class="lang-btn" aria-haspopup="listbox" aria-expanded="false">
+        Español
+        <span class="chevron" aria-hidden="true">▾</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ CONTENIDO PRINCIPAL ============ -->
+  <main class="register-main">
+    <div class="register-card">
+
+      <a href="../../index.html" class="back-link">
+        <span aria-hidden="true">←</span> Volver
+      </a>
+
+      <h1 class="register-title">Crea una cuenta</h1>
+
+      <!-- Formulario -->
+      <form class="register-form" novalidate>
+
+        <div class="form-group">
+          <label for="fullname" class="form-label">Nombre completo</label>
+          <input
+            type="text"
+            id="fullname"
+            name="fullname"
+            class="form-input"
+            placeholder="Nombre completo"
+            autocomplete="name"
+          >
+          <p id="errorNombre" class="form-error" hidden></p>
+        </div>
+
+        <!-- Método de registro: correo, teléfono o documento de identidad -->
+        <div class="form-group">
+          <span class="form-label" id="method-label">¿Cómo prefieres registrarte?</span>
+          <div class="method-tabs" role="tablist" aria-labelledby="method-label">
+            <button type="button" class="method-tab is-active" data-method="email" role="tab" aria-selected="true">
+              Correo
+            </button>
+            <button type="button" class="method-tab" data-method="phone" role="tab" aria-selected="false">
+              Teléfono
+            </button>
+            <button type="button" class="method-tab" data-method="document" role="tab" aria-selected="false">
+              Documento
+            </button>
+          </div>
+
+          <!-- Campo dinámico según el método elegido -->
+          <input
+            type="email"
+            id="contact-email"
+            name="contact-email"
+            class="form-input contact-field"
+            placeholder="Email"
+            autocomplete="email"
+          >
+          <input
+            type="tel"
+            id="contact-phone"
+            name="contact-phone"
+            class="form-input contact-field"
+            placeholder="Número de teléfono"
+            autocomplete="tel"
+            hidden
+          >
+          <input
+            type="text"
+            id="contact-document"
+            name="contact-document"
+            class="form-input contact-field"
+            placeholder="Documento de identidad (DNI, CE, etc.)"
+            autocomplete="off"
+            hidden
+          >
+          <p id="errorContacto" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="birthdate" class="form-label">Fecha de nacimiento</label>
+          <input
+            type="date"
+            id="birthdate"
+            name="birthdate"
+            class="form-input"
+          >
+          <p class="form-hint">Senior Pro está dirigido a personas de 50 años a más.</p>
+          <p id="errorNacimiento" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="Contraseña"
+              autocomplete="new-password"
+            >
+            <button type="button" class="toggle-password" aria-label="Mostrar contraseña" aria-pressed="false">
+              👁
+            </button>
+          </div>
+          <p id="errorPassword" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="country" class="form-label">País</label>
+          <div class="select-wrapper">
+            <span class="flag-icon" aria-hidden="true">🇵🇪</span>
+            <select id="country" name="country" class="form-select" required>
+              <option value="PE" selected>Perú</option>
+              <option value="AR">Argentina</option>
+              <option value="CL">Chile</option>
+              <option value="CO">Colombia</option>
+              <option value="MX">México</option>
+              <option value="EC">Ecuador</option>
+              <option value="BO">Bolivia</option>
+              <option value="OTRO">Otro país</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Aviso de términos -->
+        <div class="terms-group">
+          <input type="checkbox" id="terms" name="terms" class="terms-checkbox">
+          <label for="terms" class="terms-label">
+            Al crear tu cuenta, estás aceptando los
+            <a href="terminos.html">términos de servicio</a>
+            y la
+            <a href="privacidad.html">política de privacidad</a>
+            de Senior Pro.
+          </label>
+        </div>
+        <p id="errorTerminos" class="form-error" hidden></p>
+
+        <button type="submit" class="btn-register">Crea tu cuenta</button>
+      </form>
+
+      <!-- Separador -->
+      <div class="divider" role="separator">
+        <span></span>
+        <em aria-hidden="true"></em>
+        <span></span>
+      </div>
+
+      <!-- Botones sociales -->
+      <div class="social-buttons">
+        <button type="button" class="btn-social btn-social--facebook">
+          <span class="social-icon" aria-hidden="true">📘</span>
+          Continuar con Facebook
+        </button>
+
+        <button type="button" class="btn-social btn-social--google">
+          <span class="social-icon" aria-hidden="true">🔵</span>
+          Continuar con Google
+        </button>
+      </div>
+
+      <p class="login-text">
+        ¿Ya estás registrado en Senior Pro?
+        <br>
+        <a href="login.html" class="login-link">Ingresa</a>
+      </p>
+
+    </div>
+  </main>
+
+  <script>
+    // Mostrar / ocultar contraseña
+    const toggleBtn = document.querySelector('.toggle-password');
+    const passwordInput = document.getElementById('password');
+
+    toggleBtn.addEventListener('click', function () {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      toggleBtn.setAttribute('aria-pressed', String(isHidden));
+      toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+
+    // ============ Selector de método de registro (correo / teléfono / documento) ============
+    const methodTabs = document.querySelectorAll('.method-tab');
+    const contactFields = {
+      email: document.getElementById('contact-email'),
+      phone: document.getElementById('contact-phone'),
+      document: document.getElementById('contact-document')
+    };
+    let metodoActivo = 'email';
+
+    methodTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        metodoActivo = tab.dataset.method;
+
+        // Actualiza estado visual/aria de las pestañas
+        methodTabs.forEach(function (t) {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-selected', 'true');
+
+        // Muestra solo el campo correspondiente al método elegido
+        Object.keys(contactFields).forEach(function (key) {
+          const field = contactFields[key];
+          const isSelected = key === metodoActivo;
+          field.hidden = !isSelected;
+          if (!isSelected) field.value = '';
+        });
+      });
+    });
+
+    // ============ Funciones de validación (mismo patrón usado en otros formularios) ============
+
+    // Muestra un mensaje de error debajo de un campo y lo resalta en rojo
+    function mostrarError(idError, idInput, mensaje) {
+      const errorEl = document.getElementById(idError);
+      errorEl.textContent = mensaje;
+      errorEl.hidden = false;
+
+      if (idInput) {
+        document.getElementById(idInput).classList.add('form-input--error');
+      }
+    }
+
+    // Limpia todos los mensajes de error antes de volver a validar
+    function limpiarErrores() {
+      document.querySelectorAll('.form-error').forEach(function (el) {
+        el.hidden = true;
+        el.textContent = '';
+      });
+      document.querySelectorAll('.form-input--error').forEach(function (el) {
+        el.classList.remove('form-input--error');
+      });
+    }
+
+    function calcularEdad(fechaNacimiento) {
+      const hoy = new Date();
+      const nacimiento = new Date(fechaNacimiento);
+      let edad = hoy.getFullYear() - nacimiento.getFullYear();
+      const difMes = hoy.getMonth() - nacimiento.getMonth();
+      if (difMes < 0 || (difMes === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+      }
+      return edad;
+    }
+
+    // ============ Validación general del formulario ============
+    const form = document.querySelector('.register-form');
+    const fullnameInput = document.getElementById('fullname');
+    const birthdateInput = document.getElementById('birthdate');
+    const termsCheckbox = document.getElementById('terms');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      limpiarErrores();
+
+      const nombre = fullnameInput.value.trim();
+      const fechaNacimiento = birthdateInput.value;
+      const password = passwordInput.value.trim();
+      const terminos = termsCheckbox.checked;
+      let valido = true;
+
+      // Validar nombre completo
+      if (nombre === '') {
+        mostrarError('errorNombre', 'fullname', 'El nombre completo es requerido.');
+        valido = false;
+      }
+
+      // Validar el campo de contacto según el método elegido
+      if (metodoActivo === 'email') {
+        const email = contactFields.email.value.trim();
+        if (email === '') {
+          mostrarError('errorContacto', 'contact-email', 'El correo electrónico es requerido.');
+          valido = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          mostrarError('errorContacto', 'contact-email', 'Ingrese un correo electrónico válido.');
+          valido = false;
+        }
+      } else if (metodoActivo === 'phone') {
+        const telefono = contactFields.phone.value.trim();
+        if (telefono === '') {
+          mostrarError('errorContacto', 'contact-phone', 'El teléfono es requerido.');
+          valido = false;
+        } else if (!/^\d{9,}$/.test(telefono)) {
+          mostrarError('errorContacto', 'contact-phone', 'Ingrese un teléfono válido (mínimo 9 dígitos).');
+          valido = false;
+        }
+      } else if (metodoActivo === 'document') {
+        const documento = contactFields.document.value.trim();
+        if (documento === '') {
+          mostrarError('errorContacto', 'contact-document', 'El documento de identidad es requerido.');
+          valido = false;
+        } else if (!/^\d{8,}$/.test(documento)) {
+          mostrarError('errorContacto', 'contact-document', 'Ingrese un documento válido (mínimo 8 dígitos).');
+          valido = false;
+        }
+      }
+
+      // Validar fecha de nacimiento y edad mínima (50 años)
+      if (fechaNacimiento === '') {
+        mostrarError('errorNacimiento', 'birthdate', 'La fecha de nacimiento es requerida.');
+        valido = false;
+      } else if (calcularEdad(fechaNacimiento) < 50) {
+        mostrarError('errorNacimiento', 'birthdate', 'Debes tener 50 años o más para registrarte en Senior Pro.');
+        valido = false;
+      }
+
+      // Validar contraseña
+      if (password === '') {
+        mostrarError('errorPassword', 'password', 'La contraseña es requerida.');
+        valido = false;
+      } else if (password.length < 6) {
+        mostrarError('errorPassword', 'password', 'La contraseña debe tener al menos 6 caracteres.');
+        valido = false;
+      }
+
+      // Validar términos y condiciones
+      if (!terminos) {
+        mostrarError('errorTerminos', null, 'Debe aceptar los términos y condiciones.');
+        valido = false;
+      }
+
+      // Si todo es válido, se procede con el registro
+      if (valido) {
+        // Aquí iría el envío real del formulario al backend
+        alert('Cuenta creada correctamente (demo).');
+        window.location.href = '../perfil/perfil.html';
+      }
+    });
+  </script>
+
+</body>
+</html>
