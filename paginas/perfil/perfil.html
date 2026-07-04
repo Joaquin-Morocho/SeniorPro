@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Panel | Senior Pro</title>
+<link rel="stylesheet" href="../../css/perfil.css">
+</head>
+<body>
+
+  <!-- ============ HEADER / NAVBAR ============ -->
+  <header class="site-header">
+    <div class="navbar">
+      <a href="../../index.html" class="brand" aria-label="Senior Pro - Inicio">
+        <span class="brand-logo" aria-hidden="true">S</span>
+        <span class="brand-text">
+          <span class="brand-name">Senior Pro</span>
+          <span class="brand-tagline">Talento con experiencia</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="../../index.html">Inicio</a>
+        <a href="../principales/buscar_talento.html">Buscar Talento</a>
+        <a href="perfil.html" class="active">Mi Panel</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-logout" id="btnCerrarSesion">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="panel-main">
+
+    <!-- ============ BANNER DE BIENVENIDA ============ -->
+    <section class="welcome-banner">
+      <div class="welcome-left">
+        <div class="avatar-wrapper">
+          <img src="https://i.pravatar.cc/120?img=13" alt="Foto de perfil de Don Carlos" class="avatar-img">
+        </div>
+        <div class="welcome-info">
+          <span class="welcome-eyebrow">Panel del profesional</span>
+          <h1 class="welcome-name">Bienvenido, <span id="nombreUsuario">Don Carlos</span></h1>
+          <p class="welcome-meta">Carpintero Ebanista · Miraflores · Miembro desde 2025</p>
+        </div>
+      </div>
+
+      <div class="welcome-stats">
+        <div class="stat-card">
+          <span class="stat-value">4.9 ★</span>
+          <span class="stat-label">142 reseñas</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">S/. 3,240</span>
+          <span class="stat-label">Este mes</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PESTAÑAS ============ -->
+    <nav class="panel-tabs" role="tablist" aria-label="Secciones del panel">
+      <button type="button" class="panel-tab is-active" data-tab="servicios" role="tab" aria-selected="true">
+        <span class="tab-icon" aria-hidden="true">🛠️</span> Mis Servicios
+      </button>
+      <button type="button" class="panel-tab" data-tab="calendario" role="tab" aria-selected="false">
+        <span class="tab-icon" aria-hidden="true">📅</span> Calendario
+      </button>
+      <button type="button" class="panel-tab" data-tab="pedidos" role="tab" aria-selected="false">
+        <span class="tab-icon" aria-hidden="true">💬</span> Pedidos y Mensajes
+      </button>
+      <button type="button" class="panel-tab" data-tab="verificacion" role="tab" aria-selected="false">
+        <span class="tab-icon" aria-hidden="true">🛡️</span> Verificación
+      </button>
+    </nav>
+
+    <!-- ============ TAB: MIS SERVICIOS ============ -->
+    <section class="tab-panel is-active" id="tab-servicios" role="tabpanel">
+      <div class="servicios-grid">
+
+        <!-- Formulario de publicación -->
+        <article class="panel-card form-card">
+          <h2 class="card-title" id="formTitulo">Publicar nuevo servicio o producto</h2>
+
+          <form id="formServicio" novalidate>
+            <input type="hidden" id="editandoId" value="">
+
+            <!-- Tipo de publicación -->
+            <div class="form-group">
+              <span class="form-label">Tipo de publicación</span>
+              <div class="type-tabs" role="tablist">
+                <button type="button" class="type-tab is-active" data-tipo="servicio" role="tab" aria-selected="true">Servicio</button>
+                <button type="button" class="type-tab" data-tipo="producto" role="tab" aria-selected="false">Producto</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pubNombre" class="form-label">Nombre</label>
+              <input type="text" id="pubNombre" class="form-input" placeholder="Ej: Restauración de muebles">
+              <p id="errorPubNombre" class="form-error" hidden></p>
+            </div>
+
+            <div class="form-group">
+              <label for="pubDescripcion" class="form-label">Descripción</label>
+              <textarea id="pubDescripcion" class="form-textarea" placeholder="Cuenta a los clientes qué haces..." rows="4"></textarea>
+              <p id="errorPubDescripcion" class="form-error" hidden></p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pubCategoria" class="form-label">Categoría</label>
+                <select id="pubCategoria" class="form-select">
+                  <option value="">Selecciona una categoría</option>
+                  <option value="Mecánica">Mecánica</option>
+                  <option value="Carpintería" selected>Carpintería</option>
+                  <option value="Electricidad">Electricidad</option>
+                  <option value="Tutorías">Tutorías</option>
+                  <option value="Mentorías">Mentorías</option>
+                  <option value="Costura">Costura</option>
+                </select>
+                <p id="errorPubCategoria" class="form-error" hidden></p>
+              </div>
+
+              <div class="form-group">
+                <label for="pubPrecio" class="form-label">Precio (S/.)</label>
+                <input type="number" id="pubPrecio" class="form-input" placeholder="60" min="0" step="1">
+                <p id="errorPubPrecio" class="form-error" hidden></p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="pubDistrito" class="form-label">Distrito</label>
+              <select id="pubDistrito" class="form-select">
+                <option value="">Selecciona un distrito</option>
+                <option value="Miraflores" selected>Miraflores</option>
+                <option value="Surco">Surco</option>
+                <option value="San Isidro">San Isidro</option>
+                <option value="San Borja">San Borja</option>
+                <option value="La Molina">La Molina</option>
+                <option value="Barranco">Barranco</option>
+              </select>
+              <p id="errorPubDistrito" class="form-error" hidden></p>
+            </div>
+
+            <!-- Visible para servicios y productos. Obligatoria solo para productos (RF10, RF11) -->
+            <div class="form-group" id="grupoFoto">
+              <label for="pubFoto" class="form-label">Fotografía</label>
+              <input type="file" id="pubFoto" class="form-file" accept="image/*">
+              <p class="form-hint" id="hintFoto">Sube una imagen clara (JPG o PNG). Recomendada para que tus clientes vean tu trabajo.</p>
+              <p id="errorPubFoto" class="form-error" hidden></p>
+              <img id="previewFoto" class="foto-preview" alt="Vista previa de la publicación" hidden>
+            </div>
+
+            <button type="submit" class="btn-publicar" id="btnPublicar">Publicar</button>
+            <button type="button" class="btn-cancelar-edicion" id="btnCancelarEdicion" hidden>Cancelar edición</button>
+          </form>
+        </article>
+
+        <!-- Lista de publicaciones -->
+        <article class="panel-card list-card">
+          <h2 class="card-title">Mis publicaciones (<span id="contadorPublicaciones">0</span>)</h2>
+          <div id="listaPublicaciones" class="publicaciones-list">
+            <!-- Las publicaciones se insertan aquí dinámicamente con JS -->
+          </div>
+          <p id="sinPublicaciones" class="empty-state">Aún no tienes publicaciones. Crea la primera con el formulario.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ TAB: CALENDARIO ============ -->
+    <section class="tab-panel" id="tab-calendario" role="tabpanel" hidden>
+      <article class="panel-card">
+        <div class="calendar-header">
+          <h2 class="card-title">Disponibilidad de horarios</h2>
+          <p class="card-subtitle">Haz clic en un día para marcarlo. 1 clic = disponible · 2 clics = bloqueado · 3 clics = libre.</p>
+        </div>
+
+        <div class="calendar-legend">
+          <span class="legend-item"><span class="legend-dot legend-dot--disponible"></span> Disponible</span>
+          <span class="legend-item"><span class="legend-dot legend-dot--bloqueado"></span> Bloqueado</span>
+        </div>
+
+        <div class="calendar-nav">
+          <button type="button" class="calendar-nav-btn" id="mesAnterior" aria-label="Mes anterior">←</button>
+          <h3 id="mesActualLabel" class="calendar-month-label"></h3>
+          <button type="button" class="calendar-nav-btn" id="mesSiguiente" aria-label="Mes siguiente">→</button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Los días se generan dinámicamente con JS -->
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ TAB: PEDIDOS Y MENSAJES ============ -->
+    <section class="tab-panel" id="tab-pedidos" role="tabpanel" hidden>
+      <article class="panel-card">
+        <h2 class="card-title">Pedidos y mensajes recibidos</h2>
+        <div id="listaPedidos" class="pedidos-list">
+          <!-- Los pedidos se insertan aquí dinámicamente con JS -->
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ TAB: VERIFICACIÓN ============ -->
+    <section class="tab-panel" id="tab-verificacion" role="tabpanel" hidden>
+      <div class="verificacion-grid">
+
+        <!-- Estado de verificación de identidad (RF04) -->
+        <article class="panel-card verificacion-status-card" id="cardEstadoVerificacion">
+
+          <!-- Vista: cuenta aprobada -->
+          <div id="verificacionAprobada">
+            <span class="badge badge--verificado">APROBADO</span>
+            <h2 class="verificacion-title">Cuenta Verificada con Éxito</h2>
+            <ul class="verificacion-checklist">
+              <li><span>DNI verificado</span><span class="check-icon" aria-hidden="true">✓</span></li>
+              <li><span>Foto de perfil aprobada</span><span class="check-icon" aria-hidden="true">✓</span></li>
+              <li><span>Referencia laboral</span><span class="check-icon" aria-hidden="true">✓</span></li>
+              <li><span>Domicilio confirmado</span><span class="check-icon" aria-hidden="true">✓</span></li>
+            </ul>
+          </div>
+
+          <!-- Formulario: pendiente de verificación (oculto por defecto en esta demo) -->
+          <div id="verificacionPendiente" hidden>
+            <div class="card-header-row">
+              <h2 class="card-title">Verificación de identidad</h2>
+              <span class="badge badge--pendiente">Pendiente</span>
+            </div>
+            <p class="card-subtitle">
+              Sube una foto legible de tu DNI o Carné de Extranjería (ambos lados) para verificar tu identidad
+              y generar más confianza con tus clientes.
+            </p>
+
+            <form id="formVerificacion" novalidate>
+              <div class="form-group">
+                <label for="docFrontal" class="form-label">Documento - Lado frontal</label>
+                <input type="file" id="docFrontal" class="form-file" accept="image/*">
+                <p id="errorDocFrontal" class="form-error" hidden></p>
+              </div>
+
+              <div class="form-group">
+                <label for="docPosterior" class="form-label">Documento - Lado posterior</label>
+                <input type="file" id="docPosterior" class="form-file" accept="image/*">
+                <p id="errorDocPosterior" class="form-error" hidden></p>
+              </div>
+
+              <button type="submit" class="btn-publicar">Enviar para revisión</button>
+            </form>
+          </div>
+        </article>
+
+        <!-- Contacto de emergencia (RF05) -->
+        <article class="panel-card">
+          <h2 class="card-title">Contacto de emergencia</h2>
+          <p class="card-subtitle">Este contacto solo se usa en caso de urgencia detectada por la plataforma.</p>
+
+          <!-- Vista de solo lectura -->
+          <div id="emergenciaVista" class="emergencia-info">
+            <div class="info-row">
+              <span class="info-label">Nombre</span>
+              <span class="info-value" id="verNombre">Rosa Pérez (hija)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Parentesco</span>
+              <span class="info-value" id="verRelacion">Familiar directo</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Teléfono</span>
+              <span class="info-value" id="verTelefono">+51 987 654 321</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Correo</span>
+              <span class="info-value" id="verCorreo">rosa.perez@ejemplo.com</span>
+            </div>
+            <button type="button" class="btn-outline" id="btnActualizarContacto">Actualizar contacto</button>
+          </div>
+
+          <!-- Formulario de edición (oculto hasta que se presione "Actualizar contacto") -->
+          <form id="formEmergencia" novalidate hidden>
+            <div class="form-group">
+              <label for="emergenciaNombre" class="form-label">Nombre completo</label>
+              <input type="text" id="emergenciaNombre" class="form-input" placeholder="Nombre completo">
+              <p id="errorEmergenciaNombre" class="form-error" hidden></p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="emergenciaRelacion" class="form-label">Parentesco</label>
+                <select id="emergenciaRelacion" class="form-select">
+                  <option value="">Selecciona una opción</option>
+                  <option value="Familiar directo">Familiar directo</option>
+                  <option value="Hijo/a">Hijo/a</option>
+                  <option value="Esposo/a">Esposo/a</option>
+                  <option value="Hermano/a">Hermano/a</option>
+                  <option value="Amigo/a">Amigo/a</option>
+                  <option value="Otro">Otro</option>
+                </select>
+                <p id="errorEmergenciaRelacion" class="form-error" hidden></p>
+              </div>
+
+              <div class="form-group">
+                <label for="emergenciaTelefono" class="form-label">Teléfono</label>
+                <input type="tel" id="emergenciaTelefono" class="form-input" placeholder="+51 987654321">
+                <p id="errorEmergenciaTelefono" class="form-error" hidden></p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="emergenciaCorreo" class="form-label">Correo</label>
+              <input type="email" id="emergenciaCorreo" class="form-input" placeholder="correo@ejemplo.com">
+              <p id="errorEmergenciaCorreo" class="form-error" hidden></p>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-publicar">Guardar contacto</button>
+              <button type="button" class="btn-cancelar-edicion" id="btnCancelarEmergencia">Cancelar</button>
+            </div>
+          </form>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../../js/perfil.js"></script>
+</body>
+</html>
