@@ -78,6 +78,8 @@ button:focus-visible{
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
 }
 
 .brand{
@@ -138,6 +140,12 @@ button:focus-visible{
   transition: color var(--transition-fast);
 }
 .link-login:hover{ color: var(--color-orange-dark); }
+
+.navbar-saludo{
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-navy);
+}
 
 .btn{
   display: inline-flex;

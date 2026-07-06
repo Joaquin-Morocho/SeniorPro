@@ -205,6 +205,56 @@ select:focus-visible{
   cursor: pointer;
 }
 
+/* ============ TARJETAS: TIPO DE CUENTA (Cliente / Usuario) ============ */
+.account-type-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 520px){
+  .account-type-grid{ grid-template-columns: 1fr; }
+}
+
+.account-type-card{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 6px;
+  padding: 16px;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.account-type-card:hover{
+  border-color: var(--color-orange);
+  transform: translateY(-1px);
+}
+
+.account-type-card.is-active{
+  border-color: var(--color-orange);
+  background-color: rgba(245,130,31,0.06);
+  box-shadow: 0 0 0 3px rgba(245,130,31,0.15);
+}
+
+.account-type-icon{ font-size: 1.4rem; }
+
+.account-type-title{
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+
+.account-type-desc{
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
 /* ============ PESTAÑAS DE MÉTODO DE REGISTRO ============ */
 .method-tabs{
   display: flex;

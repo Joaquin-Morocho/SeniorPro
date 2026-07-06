@@ -66,7 +66,7 @@
           <p id="errorPassword" class="form-error" hidden></p>
         </div>
 
-        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        <a href="recuperar-contrasena.html" class="forgot-link">¿Olvidaste tu contraseña?</a>
 
         <button type="submit" class="btn-login">Ingresa</button>
       </form>
@@ -104,6 +104,7 @@
     </div>
   </main>
 
+  <script src="../../js/sesion.js"></script>
   <script>
     const form = document.querySelector('.login-form');
     const emailInput = document.getElementById('email');
@@ -154,11 +155,34 @@
         valido = false;
       }
 
-      // Si todo es válido, redirige al perfil
-      // (aquí normalmente se validaría el login contra un backend real)
-      if (valido) {
-        alert('Bienvenido!!!');
+      if (!valido) return;
+
+      // ---------------------------------------------------------------
+      // MODO DEMO (sin backend): como aún no hay servidor que verifique
+      // la contraseña, buscamos si ese correo ya se registró antes en
+      // este mismo navegador (guardado por registro.html) y recuperamos
+      // su tipo de cuenta (usuario/cliente). Si no existe, entra como
+      // cliente por defecto para no bloquear la demo.
+      // ---------------------------------------------------------------
+      let cuenta = spBuscarUsuarioPorCorreo(email);
+
+      if (!cuenta) {
+        cuenta = {
+          nombre: email.split('@')[0],
+          correo: email,
+          telefono: '',
+          tipo: 'cliente'
+        };
+        spGuardarUsuarioRegistrado(cuenta);
+      }
+
+      spIniciarSesion(cuenta);
+      alert('¡Bienvenido, ' + cuenta.nombre + '!');
+
+      if (cuenta.tipo === 'usuario') {
         window.location.href = '../perfil/perfil.html';
+      } else {
+        window.location.href = '../principales/buscar_talento.html';
       }
     });
 

@@ -22,6 +22,7 @@
       <nav class="nav-links" aria-label="Navegación principal">
         <a href="#" class="active">Inicio</a>
         <a href="paginas/principales/buscar_talento.html">Buscar Talento</a>
+        <a href="paginas/principales/buscar_productos.html">Buscar Productos</a>
       </nav>
 
       <div class="nav-actions">
@@ -54,7 +55,7 @@
           <div class="cta-icon" aria-hidden="true">🔍</div>
           <h3>Busco Talento con Experiencia</h3>
           <p>Quiero contratar profesionales verificados de mi distrito, a un clic.</p>
-          <a href="buscar-talento.html" class="cta-link">Buscar ahora →</a>
+          <a href="paginas/principales/buscar_talento.html" class="cta-link">Buscar ahora →</a>
         </article>
       </div>
     </section>
@@ -173,5 +174,14 @@
     </div>
   </footer>
 
+  <script src="js/sesion.js"></script>
+  <script>
+    spPintarNavbarPublico({
+      login: 'paginas/inicioSesion/login.html',
+      registro: 'paginas/inicioSesion/registro.html',
+      perfilUsuario: 'paginas/perfil/perfil.html',
+      buscarTalento: 'paginas/principales/buscar_talento.html'
+    });
+  </script>
 </body>
 </html>

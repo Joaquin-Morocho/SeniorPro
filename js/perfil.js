@@ -52,14 +52,23 @@ panelTabs.forEach(function (tab) {
 });
 
 /* ==========================================================================
-   2. CERRAR SESIÓN (RF02)
+   2. CERRAR SESIÓN (RF02) + SALUDO CON EL NOMBRE DE LA CUENTA ACTIVA
    ========================================================================== */
 document.getElementById('btnCerrarSesion').addEventListener('click', function () {
   const confirmado = confirm('¿Seguro que deseas cerrar sesión?');
   if (confirmado) {
-    window.location.href = '../inicioSesion/login.html';
+    spCerrarSesion('../inicioSesion/login.html');
   }
 });
+
+// Si hay una sesión activa (registro/login reciente), muestra el nombre real
+// en vez del nombre de ejemplo "Joaquin"
+(function pintarNombreDesdeSesion() {
+  const sesion = spObtenerSesion();
+  if (sesion && sesion.nombre) {
+    document.getElementById('nombreUsuario').textContent = sesion.nombre.split(' ')[0];
+  }
+})();
 
 /* ==========================================================================
    3. MIS SERVICIOS — CRUD de publicaciones (RF06, RF07, RF08, RF09, RF10, RF11, RF12)
@@ -500,7 +509,34 @@ formVerificacion.addEventListener('submit', function (e) {
   // Simula la aprobación inmediata y cambia a la vista de "Cuenta Verificada"
   document.getElementById('verificacionPendiente').hidden = true;
   document.getElementById('verificacionAprobada').hidden = false;
-  alert('Documentos enviados y verificados correctamente.');
+  mostrarModalExito('Documentos enviados y verificados correctamente.');
+});
+
+/* ==========================================================================
+   MODAL: ACCIÓN EXITOSA (reutilizable en toda la página de perfil)
+   ========================================================================== */
+const modalExito = document.getElementById('modalExito');
+const btnCerrarExito = document.getElementById('btnCerrarExito');
+
+function mostrarModalExito(mensaje) {
+  document.getElementById('modalExitoDescripcion').textContent = mensaje;
+  modalExito.hidden = false;
+}
+
+function cerrarModalExito() {
+  modalExito.hidden = true;
+}
+
+btnCerrarExito.addEventListener('click', cerrarModalExito);
+
+// Cierra el modal si se hace clic fuera de la caja (en el fondo oscuro)
+modalExito.addEventListener('click', function (e) {
+  if (e.target === modalExito) cerrarModalExito();
+});
+
+// Cierra el modal con la tecla Escape
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modalExito.hidden) cerrarModalExito();
 });
 
 /* ==========================================================================

@@ -774,3 +774,76 @@ textarea:focus-visible{
 @media (prefers-reduced-motion: reduce){
   *{ transition: none !important; }
 }
+
+/* ============ MODAL: ACCIÓN EXITOSA ============ */
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15,28,56,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.modal-overlay[hidden]{ display: none; }
+
+.modal-box{
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-hover);
+}
+
+.modal-box--exito{
+  max-width: 380px;
+  padding: 34px 30px;
+  text-align: center;
+}
+
+.modal-exito-icono{
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-exito-titulo{
+  font-size: 1.25rem;
+  color: var(--color-navy);
+  margin: 0 0 10px;
+}
+
+.modal-exito-descripcion{
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.btn-modal-exito{
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  background-color: var(--color-orange);
+  color: var(--color-white);
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-modal-exito:hover{
+  background-color: var(--color-orange-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}

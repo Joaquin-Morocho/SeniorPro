@@ -27,7 +27,7 @@
   <main class="register-main">
     <div class="register-card">
 
-      <a href="../../index.html" class="back-link">
+      <a href="login.html" class="back-link">
         <span aria-hidden="true">←</span> Volver
       </a>
 
@@ -35,6 +35,32 @@
 
       <!-- Formulario -->
       <form class="register-form" novalidate>
+
+        <!-- ============ TIPO DE CUENTA (RF01 / Alcance del proyecto) ============ -->
+        <div class="form-group">
+          <span class="form-label" id="tipo-cuenta-label">¿Qué te trae a Senior Pro?</span>
+
+          <div class="account-type-grid" role="radiogroup" aria-labelledby="tipo-cuenta-label">
+
+            <button type="button" class="account-type-card" data-tipo="cliente" role="radio" aria-checked="false">
+              <span class="account-type-icon" aria-hidden="true">🔍</span>
+              <span class="account-type-title">Busco talento o productos</span>
+              <span class="account-type-desc">
+                Quiero contratar profesionales o comprar productos hechos por personas con experiencia.
+              </span>
+            </button>
+
+            <button type="button" class="account-type-card" data-tipo="usuario" role="radio" aria-checked="false">
+              <span class="account-type-icon" aria-hidden="true">🛠️</span>
+              <span class="account-type-title">Ofrezco mis servicios</span>
+              <span class="account-type-desc">
+                Tengo más de 50 años y quiero publicar servicios, productos o mentorías para generar ingresos.
+              </span>
+            </button>
+
+          </div>
+          <p id="errorTipoCuenta" class="form-error" hidden></p>
+        </div>
 
         <div class="form-group">
           <label for="fullname" class="form-label">Nombre completo</label>
@@ -186,6 +212,7 @@
     </div>
   </main>
 
+  <script src="../../js/sesion.js"></script>
   <script>
     // Mostrar / ocultar contraseña
     const toggleBtn = document.querySelector('.toggle-password');
@@ -196,6 +223,25 @@
       passwordInput.type = isHidden ? 'text' : 'password';
       toggleBtn.setAttribute('aria-pressed', String(isHidden));
       toggleBtn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+
+    // ============ Selector de tipo de cuenta (Cliente / Usuario) ============
+    const accountTypeCards = document.querySelectorAll('.account-type-card');
+    let tipoCuentaSeleccionado = null;
+
+    accountTypeCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        tipoCuentaSeleccionado = card.dataset.tipo;
+
+        accountTypeCards.forEach(function (c) {
+          c.classList.remove('is-active');
+          c.setAttribute('aria-checked', 'false');
+        });
+        card.classList.add('is-active');
+        card.setAttribute('aria-checked', 'true');
+
+        document.getElementById('errorTipoCuenta').hidden = true;
+      });
     });
 
     // ============ Selector de método de registro (correo / teléfono / documento) ============
@@ -280,6 +326,12 @@
       const terminos = termsCheckbox.checked;
       let valido = true;
 
+      // Validar tipo de cuenta
+      if (!tipoCuentaSeleccionado) {
+        mostrarError('errorTipoCuenta', null, 'Selecciona una opción para continuar.');
+        valido = false;
+      }
+
       // Validar nombre completo
       if (nombre === '') {
         mostrarError('errorNombre', 'fullname', 'El nombre completo es requerido.');
@@ -287,6 +339,9 @@
       }
 
       // Validar el campo de contacto según el método elegido
+      let correoUsuario = '';
+      let telefonoUsuario = '';
+
       if (metodoActivo === 'email') {
         const email = contactFields.email.value.trim();
         if (email === '') {
@@ -295,6 +350,8 @@
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           mostrarError('errorContacto', 'contact-email', 'Ingrese un correo electrónico válido.');
           valido = false;
+        } else {
+          correoUsuario = email;
         }
       } else if (metodoActivo === 'phone') {
         const telefono = contactFields.phone.value.trim();
@@ -304,6 +361,8 @@
         } else if (!/^\d{9,}$/.test(telefono)) {
           mostrarError('errorContacto', 'contact-phone', 'Ingrese un teléfono válido (mínimo 9 dígitos).');
           valido = false;
+        } else {
+          telefonoUsuario = telefono;
         }
       } else if (metodoActivo === 'document') {
         const documento = contactFields.document.value.trim();
@@ -342,9 +401,27 @@
 
       // Si todo es válido, se procede con el registro
       if (valido) {
-        // Aquí iría el envío real del formulario al backend
-        alert('Cuenta creada correctamente (demo).');
-        window.location.href = '../perfil/perfil.html';
+        // Guarda la cuenta y la sesión (modo demo, ver js/sesion.js)
+        const nuevoUsuario = {
+          nombre: nombre,
+          correo: correoUsuario,
+          telefono: telefonoUsuario,
+          metodoRegistro: metodoActivo,
+          pais: document.getElementById('country').value,
+          tipo: tipoCuentaSeleccionado // 'usuario' (profesional) | 'cliente' (busca/contrata)
+        };
+
+        spGuardarUsuarioRegistrado(nuevoUsuario);
+        spIniciarSesion(nuevoUsuario);
+
+        alert('¡Bienvenido, ' + nombre + '!');
+
+        // Redirige según el tipo de cuenta elegido
+        if (tipoCuentaSeleccionado === 'usuario') {
+          window.location.href = '../perfil/perfil.html';
+        } else {
+          window.location.href = '../principales/buscar_talento.html';
+        }
       }
     });
   </script>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buscar Talento | Senior Pro</title>
-<link rel="stylesheet" href="../../css/buscar_talento.css">
+<title>Buscar Productos | Senior Pro</title>
+<link rel="stylesheet" href="../../css/buscar_productos.css">
 </head>
 <body>
 
@@ -21,8 +21,8 @@
 
       <nav class="nav-links" aria-label="Navegación principal">
         <a href="../../index.html">Inicio</a>
-        <a href="buscar_talento.html" class="active">Buscar Talento</a>
-        <a href="buscar_productos.html">Buscar Productos</a>
+        <a href="buscar_talento.html">Buscar Talento</a>
+        <a href="buscar_productos.html" class="active">Buscar Productos</a>
       </nav>
 
       <div class="nav-actions">
@@ -34,15 +34,15 @@
 
   <main class="buscar-main">
 
-    <!-- ============ BARRA DE BÚSQUEDA (CU05, paso 1-2) ============ -->
+    <!-- ============ BARRA DE BÚSQUEDA (CU06, paso 1) ============ -->
     <section class="search-card">
-      <h1 class="search-title">¿Qué necesitas hoy?</h1>
+      <h1 class="search-title">Productos hechos por manos expertas</h1>
       <form id="formBusqueda" class="search-form">
         <input
           type="text"
           id="inputBusqueda"
           class="search-input"
-          placeholder="Ej: Carpintero, Matemáticas, Electricista..."
+          placeholder="Ej: Mueble, vestido a medida, repostería..."
           autocomplete="off"
         >
         <button type="submit" class="btn-buscar">Buscar</button>
@@ -51,7 +51,7 @@
 
     <div class="buscar-layout">
 
-      <!-- ============ FILTROS (RF07 categoría, RF09 ubicación) ============ -->
+      <!-- ============ FILTROS (RF07 categoría) ============ -->
       <aside class="filtros-panel">
         <h2 class="filtros-title">Filtros</h2>
 
@@ -59,12 +59,10 @@
           <label for="filtroCategoria" class="form-label">Categoría</label>
           <select id="filtroCategoria" class="form-select">
             <option value="">Todas</option>
-            <option value="Mecánica">Mecánica</option>
             <option value="Carpintería">Carpintería</option>
-            <option value="Electricidad">Electricidad</option>
-            <option value="Tutorías">Tutorías</option>
-            <option value="Mentorías">Mentorías</option>
             <option value="Costura">Costura</option>
+            <option value="Repostería">Repostería</option>
+            <option value="Artesanía">Artesanía</option>
           </select>
         </div>
 
@@ -81,20 +79,10 @@
           </select>
         </div>
 
-        <!-- Ubicación aproximada (RF09). La geolocalización real requiere permiso
-             del navegador; aquí se simula filtrando por la distancia ya registrada
-             en el perfil de cada profesional. -->
-        <label class="filtro-ubicacion" for="filtroCerca">
-          <input type="checkbox" id="filtroCerca" class="filtro-checkbox">
-          <span class="filtro-ubicacion-text">
-            <span class="filtro-ubicacion-titulo">📍 A menos de 1 km</span>
-            <span class="filtro-ubicacion-sub">Usar mi ubicación (simulado)</span>
-          </span>
-        </label>
-
-        <label class="filtro-simple">
-          <input type="checkbox" id="filtroDisponibleHoy" class="filtro-checkbox">
-          Disponible hoy
+        <!-- Precondición de CU06: solo interesa ver productos con stock -->
+        <label class="filtro-simple" for="filtroSoloStock">
+          <input type="checkbox" id="filtroSoloStock" class="filtro-checkbox" checked>
+          Solo con stock disponible
         </label>
 
         <button type="button" id="btnLimpiarFiltros" class="btn-limpiar">Limpiar filtros</button>
@@ -102,14 +90,14 @@
 
       <!-- ============ RESULTADOS ============ -->
       <section class="resultados-panel">
-        <p class="resultados-contador"><span id="contadorResultados">0</span> profesionales encontrados</p>
+        <p class="resultados-contador"><span id="contadorResultados">0</span> productos encontrados</p>
         <div id="chipsFiltros" class="chips-filtros"></div>
 
-        <div id="gridProfesionales" class="profesionales-grid">
+        <div id="gridProductos" class="productos-grid">
           <!-- Las tarjetas se generan dinámicamente con JS -->
         </div>
 
-        <!-- Flujo alterno de CU05: sin coincidencias -->
+        <!-- Flujo alterno de CU06: sin coincidencias -->
         <div id="sinResultados" class="sin-resultados" hidden>
           <span class="sin-resultados-icon" aria-hidden="true">🔍</span>
           <h3>No se encontraron coincidencias</h3>
@@ -120,27 +108,44 @@
     </div>
   </main>
 
-  <!-- ============ MODAL: CONTRATAR PROFESIONAL ============ -->
-  <div class="modal-overlay" id="modalContratar" hidden>
+  <!-- ============ MODAL: GENERAR PEDIDO (CU06) ============ -->
+  <div class="modal-overlay" id="modalPedido" hidden>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
 
-      <h2 class="modal-titulo" id="modalTitulo">Contratar a <span id="modalNombrePro"></span></h2>
+      <h2 class="modal-titulo" id="modalTitulo">Comprar <span id="modalNombreProducto"></span></h2>
       <p class="modal-descripcion">
-        Enviaremos una notificación al profesional con tu solicitud.
-        Podrás coordinar detalles por mensajería interna.
+        Se generará un pedido y notificaremos al vendedor. Podrás coordinar la entrega
+        por mensajería interna.
       </p>
 
-      <!-- Resumen del profesional seleccionado -->
+      <!-- Resumen del producto seleccionado -->
       <div class="modal-resumen">
-        <img id="modalAvatarPro" class="modal-avatar" src="" alt="">
+        <img id="modalFotoProducto" class="modal-avatar" src="" alt="">
         <div>
-          <p class="modal-oficio" id="modalOficioPro"></p>
-          <p class="modal-precio" id="modalPrecioPro"></p>
+          <p class="modal-oficio" id="modalVendedorProducto"></p>
+          <p class="modal-precio" id="modalPrecioProducto"></p>
         </div>
       </div>
 
-      <!-- Formulario de contacto del cliente -->
-      <form id="formContratar" class="modal-form" novalidate>
+      <!-- Formulario de pedido -->
+      <form id="formPedido" class="modal-form" novalidate>
+
+        <div class="form-group">
+          <span class="form-label">Cantidad</span>
+          <div class="cantidad-selector">
+            <button type="button" class="cantidad-btn" id="btnMenosCantidad" aria-label="Disminuir cantidad">−</button>
+            <input type="number" id="inputCantidad" class="cantidad-input" value="1" min="1">
+            <button type="button" class="cantidad-btn" id="btnMasCantidad" aria-label="Aumentar cantidad">+</button>
+            <span class="cantidad-stock-hint" id="cantidadStockHint"></span>
+          </div>
+          <p id="errorCantidad" class="form-error" hidden></p>
+        </div>
+
+        <div class="modal-subtotal">
+          Subtotal
+          <span id="modalSubtotal">S/. 0</span>
+        </div>
+
         <div class="form-group">
           <label for="clienteNombre" class="form-label">Nombre completo</label>
           <input type="text" id="clienteNombre" class="form-input" placeholder="Tu nombre completo">
@@ -160,21 +165,22 @@
         </div>
 
         <div class="modal-buttons">
-          <button type="button" class="btn-modal-cancelar" id="btnCancelarContratar">Cancelar</button>
-          <button type="submit" class="btn-modal-enviar">Enviar solicitud</button>
+          <button type="button" class="btn-modal-cancelar" id="btnCancelarPedido">Cancelar</button>
+          <button type="submit" class="btn-modal-enviar">Generar pedido</button>
         </div>
       </form>
 
     </div>
   </div>
 
+  <!-- ============ MODAL: PEDIDO GENERADO (ÉXITO) ============ -->
   <!-- ============ MODAL: EDITAR MI PERFIL (solo cuentas tipo "cliente") ============ -->
   <div class="modal-overlay" id="modalEditarPerfil" hidden>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditarPerfilTitulo">
 
       <h2 class="modal-titulo" id="modalEditarPerfilTitulo">Editar mi perfil</h2>
       <p class="modal-descripcion">
-        Estos datos se usarán para autocompletar tus próximas solicitudes de contratación o compra.
+        Estos datos se usarán para autocompletar tus próximas solicitudes de compra o contratación.
       </p>
 
       <form id="formEditarPerfil" class="modal-form" novalidate>
@@ -205,7 +211,6 @@
     </div>
   </div>
 
-  <!-- ============ MODAL: SOLICITUD ENVIADA (ÉXITO) ============ -->
   <div class="modal-overlay" id="modalExito" hidden>
     <div class="modal-box modal-box--exito" role="dialog" aria-modal="true" aria-labelledby="modalExitoTitulo">
       <div class="modal-exito-icono" aria-hidden="true">
@@ -213,13 +218,13 @@
           <path d="M4 12.5L9.5 18L20 6" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <h2 class="modal-exito-titulo" id="modalExitoTitulo">¡Solicitud enviada!</h2>
+      <h2 class="modal-exito-titulo" id="modalExitoTitulo">¡Pedido generado!</h2>
       <p class="modal-exito-descripcion" id="modalExitoDescripcion"></p>
       <button type="button" class="btn-modal-exito" id="btnCerrarExito">Cerrar</button>
     </div>
   </div>
 
   <script src="../../js/sesion.js"></script>
-  <script src="../../js/buscar_talento.js"></script>
+  <script src="../../js/buscar_productos.js"></script>
 </body>
 </html>

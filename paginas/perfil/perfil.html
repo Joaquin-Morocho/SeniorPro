@@ -20,8 +20,6 @@
       </a>
 
       <nav class="nav-links" aria-label="Navegación principal">
-        <a href="../../index.html">Inicio</a>
-        <a href="../principales/buscar_talento.html">Buscar Talento</a>
         <a href="perfil.html" class="active">Mi Panel</a>
       </nav>
 
@@ -41,7 +39,7 @@
         </div>
         <div class="welcome-info">
           <span class="welcome-eyebrow">Panel del profesional</span>
-          <h1 class="welcome-name">Bienvenido, <span id="nombreUsuario">Don Carlos</span></h1>
+          <h1 class="welcome-name">Bienvenido, <span id="nombreUsuario">Joaquin</span></h1>
           <p class="welcome-meta">Carpintero Ebanista · Miraflores · Miembro desde 2025</p>
         </div>
       </div>
@@ -329,6 +327,21 @@
 
   </main>
 
+  <!-- ============ MODAL: ACCIÓN EXITOSA ============ -->
+  <div class="modal-overlay" id="modalExito" hidden>
+    <div class="modal-box modal-box--exito" role="dialog" aria-modal="true" aria-labelledby="modalExitoTitulo">
+      <div class="modal-exito-icono" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 12.5L9.5 18L20 6" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="modal-exito-titulo" id="modalExitoTitulo">¡Listo!</h2>
+      <p class="modal-exito-descripcion" id="modalExitoDescripcion"></p>
+      <button type="button" class="btn-modal-exito" id="btnCerrarExito">Cerrar</button>
+    </div>
+  </div>
+
+  <script src="../../js/sesion.js"></script>
   <script src="../../js/perfil.js"></script>
 </body>
 </html>
