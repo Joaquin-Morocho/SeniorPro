@@ -430,6 +430,26 @@ select:focus-visible{
   flex-shrink: 0;
 }
 
+.profesional-header-right{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-ver-perfil{
+  background: none;
+  border: none;
+  color: var(--color-navy);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+.btn-ver-perfil:hover{ color: var(--color-orange-dark); }
+
 .profesional-tags{
   display: flex;
   flex-wrap: wrap;
@@ -664,6 +684,51 @@ select:focus-visible{
   transform: translateY(-1px);
   box-shadow: var(--shadow-hover);
 }
+
+/* ============ MODAL: VER PERFIL DEL PROFESIONAL ============ */
+.modal-box--perfil{
+  max-width: 480px;
+}
+
+.perfil-modal-header{
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.perfil-modal-avatar{
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.perfil-modal-datos{
+  flex: 1;
+  min-width: 0;
+}
+
+.perfil-detalle{ margin-bottom: 16px; }
+
+.perfil-detalle-titulo{
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.perfil-detalle-texto{
+  font-size: 0.86rem;
+  color: var(--color-text-main);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.perfil-modal-footer{ margin-bottom: 12px; }
 
 /* ============ MODAL: SOLICITUD ENVIADA (ÉXITO) ============ */
 .modal-box--exito{

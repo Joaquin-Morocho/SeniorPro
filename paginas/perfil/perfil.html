@@ -20,7 +20,11 @@
       </a>
 
       <nav class="nav-links" aria-label="Navegación principal">
+        <a href="../../index.html">Inicio</a>
+        <a href="../principales/buscar_talento.html">Buscar Talento</a>
+        <a href="../principales/buscar_productos.html">Buscar Productos</a>
         <a href="perfil.html" class="active">Mi Panel</a>
+        
       </nav>
 
       <div class="nav-actions">
@@ -35,12 +39,14 @@
     <section class="welcome-banner">
       <div class="welcome-left">
         <div class="avatar-wrapper">
-          <img src="https://i.pravatar.cc/120?img=13" alt="Foto de perfil de Don Carlos" class="avatar-img">
+          <img src="https://i.pravatar.cc/120?img=13" alt="Foto de perfil de Don Carlos" class="avatar-img" id="avatarUsuario">
         </div>
         <div class="welcome-info">
           <span class="welcome-eyebrow">Panel del profesional</span>
           <h1 class="welcome-name">Bienvenido, <span id="nombreUsuario">Joaquin</span></h1>
-          <p class="welcome-meta">Carpintero Ebanista · Miraflores · Miembro desde 2025</p>
+          <p class="welcome-meta"><span id="oficioUsuario">Carpintero Ebanista</span> · <span id="distritoUsuario">Miraflores</span> · Miembro desde 2025</p>
+          <p class="welcome-habilidades" id="habilidadesUsuario" hidden></p>
+          <button type="button" class="btn-editar-perfil" id="btnEditarPerfil">✏️ Editar perfil</button>
         </div>
       </div>
 
@@ -65,7 +71,7 @@
         <span class="tab-icon" aria-hidden="true">📅</span> Calendario
       </button>
       <button type="button" class="panel-tab" data-tab="pedidos" role="tab" aria-selected="false">
-        <span class="tab-icon" aria-hidden="true">💬</span> Pedidos y Mensajes
+        <span class="tab-icon" aria-hidden="true">💬</span> Solicitudes
       </button>
       <button type="button" class="panel-tab" data-tab="verificacion" role="tab" aria-selected="false">
         <span class="tab-icon" aria-hidden="true">🛡️</span> Verificación
@@ -195,12 +201,12 @@
       </article>
     </section>
 
-    <!-- ============ TAB: PEDIDOS Y MENSAJES ============ -->
+    <!-- ============ TAB: SOLICITUDES ============ -->
     <section class="tab-panel" id="tab-pedidos" role="tabpanel" hidden>
       <article class="panel-card">
-        <h2 class="card-title">Pedidos y mensajes recibidos</h2>
+        <h2 class="card-title">Solicitudes recibidas</h2>
         <div id="listaPedidos" class="pedidos-list">
-          <!-- Los pedidos se insertan aquí dinámicamente con JS -->
+          <!-- Las solicitudes se insertan aquí dinámicamente con JS -->
         </div>
       </article>
     </section>
@@ -326,6 +332,100 @@
     </section>
 
   </main>
+
+  <!-- ============ MODAL: EDITAR PERFIL (RF03) ============ -->
+  <div class="modal-overlay" id="modalEditarPerfil" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditarPerfilTitulo">
+      <h2 class="modal-titulo" id="modalEditarPerfilTitulo">Editar mi perfil</h2>
+      <p class="modal-descripcion">Esta información es la que verán las personas que buscan tus servicios.</p>
+
+      <form id="formEditarPerfil" class="modal-form" novalidate>
+
+        <div class="form-group">
+          <span class="form-label">Foto de perfil</span>
+          <div class="avatar-editar-row">
+            <img id="previewAvatarPerfil" class="avatar-editar-preview" src="https://i.pravatar.cc/120?img=13" alt="Vista previa de tu foto de perfil">
+            <input type="file" id="editarFoto" class="form-file" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editarNombre" class="form-label">Nombre completo</label>
+          <input type="text" id="editarNombre" class="form-input" placeholder="Nombre completo">
+          <p id="errorEditarNombre" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarCorreo" class="form-label">Correo electrónico</label>
+          <input type="email" id="editarCorreo" class="form-input" placeholder="correo@ejemplo.com">
+          <p id="errorEditarCorreo" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarTelefono" class="form-label">Teléfono</label>
+          <input type="tel" id="editarTelefono" class="form-input" placeholder="987654321">
+          <p id="errorEditarTelefono" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarProfesion" class="form-label">Profesión / Oficio</label>
+          <input type="text" id="editarProfesion" class="form-input" placeholder="Ej: Carpintero Ebanista">
+          <p id="errorEditarProfesion" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarDistrito" class="form-label">Distrito / Ciudad</label>
+          <select id="editarDistrito" class="form-select">
+            <option value="">Selecciona un distrito</option>
+            <option value="Miraflores">Miraflores</option>
+            <option value="San Isidro">San Isidro</option>
+            <option value="Surco">Surco</option>
+            <option value="San Borja">San Borja</option>
+            <option value="La Molina">La Molina</option>
+            <option value="Barranco">Barranco</option>
+          </select>
+          <p id="errorEditarDistrito" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarDireccion" class="form-label">Dirección referencial</label>
+          <input type="text" id="editarDireccion" class="form-input" placeholder="Ej: Cerca al parque Kennedy">
+          <p class="form-hint">Por tu seguridad, no coloques tu dirección exacta — solo una referencia general.</p>
+          <p id="errorEditarDireccion" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarFormacion" class="form-label">Formación / Certificaciones</label>
+          <input type="text" id="editarFormacion" class="form-input" placeholder="Ej: Técnico en carpintería - SENATI">
+          <p id="errorEditarFormacion" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarResumen" class="form-label">Resumen / Sobre mí</label>
+          <textarea id="editarResumen" class="form-textarea" rows="3" placeholder="Cuenta brevemente tu trayectoria a tus futuros clientes..."></textarea>
+          <p id="errorEditarResumen" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarHabilidades" class="form-label">Habilidades</label>
+          <input type="text" id="editarHabilidades" class="form-input" placeholder="Ej: Restauración, Ebanistería, Diseño a medida">
+          <p class="form-hint">Sepáralas con comas.</p>
+          <p id="errorEditarHabilidades" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-group">
+          <label for="editarExperiencia" class="form-label">Años de experiencia</label>
+          <input type="number" id="editarExperiencia" class="form-input" placeholder="15" min="0" max="80">
+          <p id="errorEditarExperiencia" class="form-error" hidden></p>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-publicar">Guardar cambios</button>
+          <button type="button" class="btn-cancelar-edicion" id="btnCancelarEditarPerfil">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ============ MODAL: ACCIÓN EXITOSA ============ -->
   <div class="modal-overlay" id="modalExito" hidden>

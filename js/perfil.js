@@ -61,28 +61,67 @@ document.getElementById('btnCerrarSesion').addEventListener('click', function ()
   }
 });
 
-// Si hay una sesión activa (registro/login reciente), muestra el nombre real
-// en vez del nombre de ejemplo "Joaquin"
-(function pintarNombreDesdeSesion() {
+// Si hay una sesión activa (registro/login reciente), muestra los datos reales
+// del usuario en el banner en vez de los datos de ejemplo ("Joaquin", etc.)
+function pintarPerfilDesdeSesion() {
   const sesion = spObtenerSesion();
-  if (sesion && sesion.nombre) {
+  if (!sesion) return;
+
+  if (sesion.nombre) {
     document.getElementById('nombreUsuario').textContent = sesion.nombre.split(' ')[0];
   }
-})();
+  if (sesion.foto) {
+    document.getElementById('avatarUsuario').src = sesion.foto;
+  }
+  if (sesion.profesion) {
+    document.getElementById('oficioUsuario').textContent = sesion.profesion;
+  }
+  if (sesion.distrito) {
+    document.getElementById('distritoUsuario').textContent = sesion.distrito;
+  }
+
+  const habilidadesEl = document.getElementById('habilidadesUsuario');
+  if (sesion.experiencia || sesion.habilidades) {
+    const partes = [];
+    if (sesion.experiencia) partes.push(sesion.experiencia + ' años de experiencia');
+    if (sesion.habilidades) partes.push(sesion.habilidades);
+    habilidadesEl.textContent = '🛠️ ' + partes.join(' · ');
+    habilidadesEl.hidden = false;
+  }
+}
+
+pintarPerfilDesdeSesion();
 
 /* ==========================================================================
    3. MIS SERVICIOS — CRUD de publicaciones (RF06, RF07, RF08, RF09, RF10, RF11, RF12)
    ========================================================================== */
 
-// Datos iniciales de ejemplo (en memoria; se pierden al recargar la página,
-// ya que esta demo no está conectada a una base de datos real)
-let publicaciones = [
+// Cuenta activa (para guardar/leer SUS publicaciones de forma persistente)
+const sesionPerfilActivo = spObtenerSesion();
+const correoProfesionalActivo = sesionPerfilActivo ? (sesionPerfilActivo.id || sesionPerfilActivo.correo || null) : null;
+
+// Datos de ejemplo (solo se usan la primera vez que un profesional entra a su
+// panel, si todavía no ha guardado publicaciones propias)
+const publicacionesPorDefecto = [
   { id: 1, tipo: 'servicio', nombre: 'Restauración de muebles antiguos', descripcion: 'Restauro muebles de madera con técnicas tradicionales.', categoria: 'Carpintería', precio: 120, distrito: 'Miraflores', foto: 'https://picsum.photos/seed/restauracion-muebles/200/200', estado: 'Activo' },
   { id: 2, tipo: 'servicio', nombre: 'Fabricación de estantes a medida', descripcion: 'Diseño y fabrico estantes personalizados.', categoria: 'Carpintería', precio: 250, distrito: 'Miraflores', foto: 'https://picsum.photos/seed/estantes-medida/200/200', estado: 'Activo' },
   { id: 3, tipo: 'servicio', nombre: 'Reparación de sillas de comedor', descripcion: 'Reparación y refuerzo de estructuras de sillas.', categoria: 'Carpintería', precio: 60, distrito: 'Miraflores', foto: 'https://picsum.photos/seed/sillas-comedor/200/200', estado: 'Pausado' }
 ];
-let siguienteId = 4;
+
+// Si el profesional ya guardó publicaciones antes, se recuperan tal cual las dejó.
+// Si es la primera vez, arranca con los 3 ejemplos de arriba (y quedan ligados a su cuenta).
+let publicaciones = (correoProfesionalActivo && spObtenerPublicacionesDe(correoProfesionalActivo))
+  || publicacionesPorDefecto.map(function (p) { return Object.assign({}, p); });
+
+let siguienteId = publicaciones.reduce(function (max, p) { return Math.max(max, p.id); }, 0) + 1;
 let editandoId = null;
+
+// Guarda el estado actual de "publicaciones" en localStorage, ligado a la cuenta activa
+function guardarPublicacionesDeLaSesion() {
+  if (correoProfesionalActivo) {
+    spGuardarPublicaciones(correoProfesionalActivo, publicaciones);
+  }
+}
 
 const formServicio = document.getElementById('formServicio');
 const tipoTabs = document.querySelectorAll('.type-tab');
@@ -149,6 +188,7 @@ function renderPublicaciones() {
       '<div class="publicacion-info">' +
         '<h3>' + escapeHtml(pub.nombre) + '</h3>' +
         '<p class="publicacion-meta">' + escapeHtml(pub.categoria) + ' · ' + escapeHtml(pub.distrito) + '</p>' +
+        '<p class="publicacion-descripcion">' + escapeHtml(pub.descripcion) + '</p>' +
         '<span class="publicacion-precio">S/. ' + pub.precio + '</span>' +
       '</div>' +
       '<div class="publicacion-actions">' +
@@ -221,6 +261,7 @@ function eliminarPublicacion(id) {
   if (!confirmado) return;
   publicaciones = publicaciones.filter(function (p) { return p.id !== id; });
   renderPublicaciones();
+  guardarPublicacionesDeLaSesion();
 }
 
 function resetFormServicio() {
@@ -303,7 +344,7 @@ formServicio.addEventListener('submit', function (e) {
     pub.distrito = distrito;
     pub.foto = fotoDataUrl;
   } else {
-    publicaciones.push({
+    publicaciones.unshift({
       id: siguienteId++,
       tipo: tipoActivo,
       nombre: nombre,
@@ -317,6 +358,7 @@ formServicio.addEventListener('submit', function (e) {
   }
 
   renderPublicaciones();
+  guardarPublicacionesDeLaSesion();
   resetFormServicio();
 });
 
@@ -326,26 +368,41 @@ renderPublicaciones();
    4. CALENDARIO DE DISPONIBILIDAD (RF14, RF15, RF16)
    ========================================================================== */
 let fechaActual = new Date();
-let estadosDias = {}; // clave: "YYYY-M-D" → 'disponible' | 'bloqueado'
 
 function claveDia(anio, mes, dia) {
   return anio + '-' + mes + '-' + dia;
 }
 
-// Datos de ejemplo precargados para que el calendario no se vea vacío al entrar
-(function precargarCalendarioDemo() {
+// Genera datos de ejemplo (solo se usan la primera vez, si la cuenta nunca
+// guardó un calendario propio en localStorage)
+function generarCalendarioDemo() {
   const anio = fechaActual.getFullYear();
   const mes = fechaActual.getMonth();
   const diasDisponibles = [2, 3, 5, 8, 9, 12, 15, 16, 19];
   const diasBloqueados = [7, 14, 21];
+  const demo = {};
 
   diasDisponibles.forEach(function (dia) {
-    estadosDias[claveDia(anio, mes, dia)] = 'disponible';
+    demo[claveDia(anio, mes, dia)] = 'disponible';
   });
   diasBloqueados.forEach(function (dia) {
-    estadosDias[claveDia(anio, mes, dia)] = 'bloqueado';
+    demo[claveDia(anio, mes, dia)] = 'bloqueado';
   });
-})();
+  return demo;
+}
+
+// clave: "YYYY-M-D" → 'disponible' | 'bloqueado'
+// Se recupera de localStorage (misma cuenta / mismo navegador); si la cuenta
+// nunca guardó nada todavía, se usa el calendario de ejemplo.
+let estadosDias = (correoProfesionalActivo && spObtenerDisponibilidadDe(correoProfesionalActivo))
+  || generarCalendarioDemo();
+
+// Guarda el estado actual de "estadosDias" en localStorage, ligado a la cuenta activa (RF14/RF15)
+function guardarDisponibilidadDeLaSesion() {
+  if (correoProfesionalActivo) {
+    spGuardarDisponibilidad(correoProfesionalActivo, estadosDias);
+  }
+}
 
 function renderCalendario() {
   const anio = fechaActual.getFullYear();
@@ -398,6 +455,7 @@ function renderCalendario() {
       } else {
         delete estadosDias[clave];
       }
+      guardarDisponibilidadDeLaSesion();
       renderCalendario();
     });
 
@@ -418,13 +476,28 @@ document.getElementById('mesSiguiente').addEventListener('click', function () {
 renderCalendario();
 
 /* ==========================================================================
-   5. PEDIDOS Y MENSAJES (RF13)
+   5. SOLICITUDES (RF13)
    ========================================================================== */
-let pedidos = [
-  { id: 1, cliente: 'Lucía Fernández', servicio: 'Restauración de muebles antiguos', fecha: '02/07/2026', estado: 'Pendiente' },
-  { id: 2, cliente: 'Jorge Ramírez', servicio: 'Fabricación de estantes a medida', fecha: '28/06/2026', estado: 'Aceptado' },
-  { id: 3, cliente: 'María López', servicio: 'Reparación de sillas de comedor', fecha: '15/06/2026', estado: 'Completado' }
+// Datos de ejemplo (solo se usan la primera vez que un profesional entra a su
+// panel, si todavía no ha recibido solicitudes reales)
+const pedidosPorDefecto = [
+  { id: 1, cliente: 'Lucía Fernández', correo: 'lucia.fernandez@example.com', telefono: '+51 987 654 321', servicio: 'Restauración de muebles antiguos', fecha: '02/07/2026', estado: 'Pendiente' },
+  { id: 2, cliente: 'Jorge Ramírez', correo: 'jorge.ramirez@example.com', telefono: '+51 976 543 210', servicio: 'Fabricación de estantes a medida', fecha: '28/06/2026', estado: 'Aceptado' },
+  { id: 3, cliente: 'María López', correo: 'maria.lopez@example.com', telefono: '+51 965 432 109', servicio: 'Reparación de sillas de comedor', fecha: '15/06/2026', estado: 'Completado' }
 ];
+
+// Si el profesional ya tiene solicitudes guardadas (propias o recibidas de
+// clientes reales vía buscar_talento.html / buscar_productos.html), se muestran esas.
+// Si es la primera vez, arranca con los 3 ejemplos de arriba.
+let pedidos = (correoProfesionalActivo && spObtenerSolicitudesDe(correoProfesionalActivo))
+  || pedidosPorDefecto.map(function (p) { return Object.assign({}, p); });
+
+// Guarda el estado actual de "pedidos" en localStorage, ligado a la cuenta activa
+function guardarSolicitudesDeLaSesion() {
+  if (correoProfesionalActivo) {
+    spGuardarSolicitudes(correoProfesionalActivo, pedidos);
+  }
+}
 
 const badgeClasePorEstado = {
   'Pendiente': 'badge--pendiente-pedido',
@@ -454,6 +527,10 @@ function renderPedidos() {
       '<div class="pedido-info">' +
         '<h3>' + escapeHtml(pedido.cliente) + '</h3>' +
         '<p class="pedido-meta">' + escapeHtml(pedido.servicio) + ' · ' + pedido.fecha + '</p>' +
+        '<p class="pedido-contacto">' +
+          '<span class="pedido-contacto-item">✉️ ' + escapeHtml(pedido.correo) + '</span>' +
+          '<span class="pedido-contacto-item">📞 ' + escapeHtml(pedido.telefono) + '</span>' +
+        '</p>' +
       '</div>' +
       '<div class="pedido-actions">' +
         '<span class="badge ' + badgeClasePorEstado[pedido.estado] + '">' + pedido.estado + '</span>' +
@@ -471,6 +548,7 @@ function renderPedidos() {
       if (pedido) {
         pedido.estado = nuevoEstado;
         renderPedidos();
+        guardarSolicitudesDeLaSesion();
       }
     });
   });
@@ -612,4 +690,143 @@ formEmergencia.addEventListener('submit', function (e) {
 
   formEmergencia.hidden = true;
   emergenciaVista.hidden = false;
+});
+/* ==========================================================================
+   8. EDITAR PERFIL (RF03) — nombre, correo, profesión, foto, habilidades y experiencia
+   ========================================================================== */
+const modalEditarPerfil = document.getElementById('modalEditarPerfil');
+const formEditarPerfil = document.getElementById('formEditarPerfil');
+const btnEditarPerfil = document.getElementById('btnEditarPerfil');
+const btnCancelarEditarPerfil = document.getElementById('btnCancelarEditarPerfil');
+const editarFotoInput = document.getElementById('editarFoto');
+const previewAvatarPerfil = document.getElementById('previewAvatarPerfil');
+let fotoPerfilDataUrl = null;
+
+function abrirModalEditarPerfil() {
+  const sesion = spObtenerSesion() || {};
+
+  limpiarErrores(formEditarPerfil);
+  document.getElementById('editarNombre').value = sesion.nombre || '';
+  document.getElementById('editarCorreo').value = sesion.correo || '';
+  document.getElementById('editarTelefono').value = sesion.telefono || '';
+  document.getElementById('editarProfesion').value = sesion.profesion || '';
+  document.getElementById('editarDistrito').value = sesion.distrito || '';
+  document.getElementById('editarDireccion').value = sesion.direccion || '';
+  document.getElementById('editarFormacion').value = sesion.formacion || '';
+  document.getElementById('editarResumen').value = sesion.resumen || '';
+  document.getElementById('editarHabilidades').value = sesion.habilidades || '';
+  document.getElementById('editarExperiencia').value = sesion.experiencia || '';
+
+  fotoPerfilDataUrl = sesion.foto || document.getElementById('avatarUsuario').src;
+  previewAvatarPerfil.src = fotoPerfilDataUrl;
+  editarFotoInput.value = '';
+
+  modalEditarPerfil.hidden = false;
+  document.getElementById('editarNombre').focus();
+}
+
+function cerrarModalEditarPerfil() {
+  modalEditarPerfil.hidden = true;
+}
+
+btnEditarPerfil.addEventListener('click', abrirModalEditarPerfil);
+btnCancelarEditarPerfil.addEventListener('click', cerrarModalEditarPerfil);
+
+// Cierra el modal si se hace clic fuera de la caja (en el fondo oscuro)
+modalEditarPerfil.addEventListener('click', function (e) {
+  if (e.target === modalEditarPerfil) cerrarModalEditarPerfil();
+});
+
+// Cierra el modal con la tecla Escape
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modalEditarPerfil.hidden) cerrarModalEditarPerfil();
+});
+
+// Vista previa inmediata al elegir una nueva foto de perfil
+editarFotoInput.addEventListener('change', function () {
+  const file = editarFotoInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    fotoPerfilDataUrl = e.target.result;
+    previewAvatarPerfil.src = fotoPerfilDataUrl;
+  };
+  reader.readAsDataURL(file);
+});
+
+formEditarPerfil.addEventListener('submit', function (e) {
+  e.preventDefault();
+  limpiarErrores(formEditarPerfil);
+
+  const nombre = document.getElementById('editarNombre').value.trim();
+  const correo = document.getElementById('editarCorreo').value.trim();
+  const telefono = document.getElementById('editarTelefono').value.trim();
+  const profesion = document.getElementById('editarProfesion').value.trim();
+  const distrito = document.getElementById('editarDistrito').value;
+  const direccion = document.getElementById('editarDireccion').value.trim();
+  const formacion = document.getElementById('editarFormacion').value.trim();
+  const resumen = document.getElementById('editarResumen').value.trim();
+  const habilidades = document.getElementById('editarHabilidades').value.trim();
+  const experiencia = document.getElementById('editarExperiencia').value;
+  let valido = true;
+
+  if (nombre === '') {
+    mostrarError('errorEditarNombre', 'editarNombre', 'El nombre completo es requerido.');
+    valido = false;
+  }
+
+  if (correo === '') {
+    mostrarError('errorEditarCorreo', 'editarCorreo', 'El correo electrónico es requerido.');
+    valido = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+    mostrarError('errorEditarCorreo', 'editarCorreo', 'Ingresa un correo electrónico válido.');
+    valido = false;
+  }
+
+  if (telefono === '') {
+    mostrarError('errorEditarTelefono', 'editarTelefono', 'El teléfono es requerido.');
+    valido = false;
+  } else if (!/^\d{9,}$/.test(telefono)) {
+    mostrarError('errorEditarTelefono', 'editarTelefono', 'Ingresa un teléfono válido (mínimo 9 dígitos).');
+    valido = false;
+  }
+
+  if (profesion === '') {
+    mostrarError('errorEditarProfesion', 'editarProfesion', 'La profesión u oficio es requerido.');
+    valido = false;
+  }
+
+  if (distrito === '') {
+    mostrarError('errorEditarDistrito', 'editarDistrito', 'Selecciona un distrito.');
+    valido = false;
+  }
+
+  if (experiencia !== '' && (Number(experiencia) < 0 || Number(experiencia) > 80)) {
+    mostrarError('errorEditarExperiencia', 'editarExperiencia', 'Ingresa un número de años válido (0 a 80).');
+    valido = false;
+  }
+
+  if (!valido) return;
+
+  // Guarda los cambios en la sesión (localStorage) — ver js/sesion.js
+  spActualizarSesion({
+    nombre: nombre,
+    correo: correo,
+    telefono: telefono,
+    profesion: profesion,
+    distrito: distrito,
+    direccion: direccion,
+    formacion: formacion,
+    resumen: resumen,
+    habilidades: habilidades,
+    experiencia: experiencia,
+    foto: fotoPerfilDataUrl
+  });
+
+  // Actualiza el banner en tiempo real, sin recargar la página
+  pintarPerfilDesdeSesion();
+
+  cerrarModalEditarPerfil();
+  mostrarModalExito('Tu perfil se actualizó correctamente.');
 });

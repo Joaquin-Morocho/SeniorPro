@@ -26,6 +26,7 @@ function limpiarErrores(contenedor) {
 
 let productoSeleccionado = null;
 
+
 // Datos de ejemplo (en memoria; en producción vendrían de la base de datos
 // a través de una API, ligados a la tabla PRODUCTO y al vendedor que lo publicó)
 const FOTO_PRODUCTO = {
@@ -36,7 +37,7 @@ const FOTO_PRODUCTO = {
   p5: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&w=500&h=400',
   p6: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=500&h=400',
   p7: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=500&h=400',
-  p8: 'https://images.unsplash.com/photo-1622048319916-a52b3b9e97c1?auto=format&fit=crop&w=500&h=400'
+  p8: '../../imagenes/macetas.jpg'
 };
 
 const VENDEDOR_AVATAR = {
@@ -59,6 +60,30 @@ const productos = [
   { id: 7, nombre: 'Torta de cumpleaños personalizada', vendedor: 'Gladys N.', vendedorAvatar: VENDEDOR_AVATAR.w8, categoria: 'Repostería', distrito: 'La Molina', precio: 95, stock: 4, foto: FOTO_PRODUCTO.p7, descripcion: 'Torta artesanal de 20 porciones, sabor y diseño a elección.' },
   { id: 8, nombre: 'Set de macetas de cerámica', vendedor: 'Isabel R.', vendedorAvatar: VENDEDOR_AVATAR.w9, categoria: 'Artesanía', distrito: 'Miraflores', precio: 60, stock: 6, foto: FOTO_PRODUCTO.p8, descripcion: 'Set de 3 macetas de cerámica pintadas a mano.' }
 ];
+
+// Agrega los productos publicados por profesionales registrados en este
+// navegador (panel "Mis Servicios" en perfil.html), para que también
+// aparezcan en el catálogo de compra (RF10-RF12)
+let siguienteIdProductoReal = 1000;
+if (typeof spObtenerPublicacionesDeTodosLosProfesionales === 'function') {
+  spObtenerPublicacionesDeTodosLosProfesionales('producto').forEach(function (pub) {
+    productos.push({
+      id: siguienteIdProductoReal++,
+      nombre: pub.nombre,
+      vendedor: pub.duenoNombre,
+      vendedorAvatar: pub.foto || 'https://placehold.co/100x100/EAF0F7/5B6B85?text=Sin+foto',
+      categoria: pub.categoria,
+      distrito: pub.distrito,
+      precio: pub.precio,
+      stock: 1,
+      foto: pub.foto || 'https://placehold.co/500x400/EAF0F7/5B6B85?text=Sin+foto',
+      descripcion: pub.descripcion,
+      duenoId: pub.duenoId,
+      duenoCorreo: pub.duenoCorreo,
+      duenoTelefono: pub.duenoTelefono
+    });
+  });
+}
 
 const inputBusqueda = document.getElementById('inputBusqueda');
 const filtroCategoria = document.getElementById('filtroCategoria');
@@ -328,6 +353,20 @@ formPedido.addEventListener('submit', function (e) {
   // al registrar el pedido, según la postcondición de CU06) y refresca el catálogo
   productoSeleccionado.stock -= cantidad;
   const nombreProducto = productoSeleccionado.nombre;
+
+  // Si el vendedor es una cuenta real registrada en este navegador (tiene
+  // duenoId), la solicitud le llega a su pestaña "Solicitudes" en perfil.html
+  if (productoSeleccionado.duenoId) {
+    spAgregarSolicitud(productoSeleccionado.duenoId, {
+      id: Date.now(),
+      cliente: nombre,
+      correo: correo,
+      telefono: telefono,
+      servicio: nombreProducto + ' (x' + cantidad + ')',
+      fecha: spFechaHoyCorta(),
+      estado: 'Pendiente'
+    });
+  }
 
   cerrarModalPedido();
   aplicarFiltros();

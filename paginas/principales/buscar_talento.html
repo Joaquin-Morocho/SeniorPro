@@ -168,6 +168,55 @@
     </div>
   </div>
 
+  <!-- ============ MODAL: VER PERFIL DEL PROFESIONAL ============ -->
+  <div class="modal-overlay" id="modalVerPerfil" hidden>
+    <div class="modal-box modal-box--perfil" role="dialog" aria-modal="true" aria-labelledby="modalPerfilNombre">
+
+      <div class="perfil-modal-header">
+        <img id="modalPerfilAvatar" class="perfil-modal-avatar" src="" alt="">
+        <div class="perfil-modal-datos">
+          <h2 class="modal-titulo" id="modalPerfilNombre"></h2>
+          <p class="modal-oficio" id="modalPerfilOficio"></p>
+          <div class="profesional-rating">
+            <span class="rating-estrellas" id="modalPerfilEstrellas"></span>
+            <span class="rating-valor" id="modalPerfilRatingValor"></span>
+            <span class="rating-count" id="modalPerfilResenas"></span>
+          </div>
+        </div>
+        <div id="modalPerfilBadgeVerificado"></div>
+      </div>
+
+      <p class="modal-descripcion" id="modalPerfilResumen"></p>
+
+      <div class="profesional-tags" id="modalPerfilTags"></div>
+
+      <div class="perfil-detalle">
+        <h3 class="perfil-detalle-titulo">Formación / Certificaciones</h3>
+        <p class="perfil-detalle-texto" id="modalPerfilFormacion"></p>
+      </div>
+
+      <div class="perfil-detalle" id="modalPerfilHabilidadesWrap">
+        <h3 class="perfil-detalle-titulo">Habilidades</h3>
+        <div class="profesional-tags" id="modalPerfilHabilidades"></div>
+      </div>
+
+      <div class="perfil-detalle">
+        <h3 class="perfil-detalle-titulo">Ubicación referencial</h3>
+        <p class="perfil-detalle-texto" id="modalPerfilDireccion"></p>
+      </div>
+
+      <div class="perfil-modal-footer">
+        <span class="profesional-precio" id="modalPerfilPrecio"></span>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn-modal-cancelar" id="btnCerrarVerPerfil">Cerrar</button>
+        <button type="button" class="btn-modal-enviar" id="btnContratarDesdePerfil">Contratar</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ============ MODAL: EDITAR MI PERFIL (solo cuentas tipo "cliente") ============ -->
   <div class="modal-overlay" id="modalEditarPerfil" hidden>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditarPerfilTitulo">

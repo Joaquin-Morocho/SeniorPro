@@ -158,22 +158,16 @@
       if (!valido) return;
 
       // ---------------------------------------------------------------
-      // MODO DEMO (sin backend): como aún no hay servidor que verifique
-      // la contraseña, buscamos si ese correo ya se registró antes en
-      // este mismo navegador (guardado por registro.html) y recuperamos
-      // su tipo de cuenta (usuario/cliente). Si no existe, entra como
-      // cliente por defecto para no bloquear la demo.
+      // MODO DEMO (sin backend): como no hay servidor que verifique la
+      // contraseña, solo validamos que el correo ya se haya registrado
+      // antes en este mismo navegador (guardado por registro.html).
+      // Si no existe, se rechaza el ingreso con un mensaje de error.
       // ---------------------------------------------------------------
-      let cuenta = spBuscarUsuarioPorCorreo(email);
+      const cuenta = spBuscarUsuarioPorCorreo(email);
 
       if (!cuenta) {
-        cuenta = {
-          nombre: email.split('@')[0],
-          correo: email,
-          telefono: '',
-          tipo: 'cliente'
-        };
-        spGuardarUsuarioRegistrado(cuenta);
+        mostrarError('errorEmail', 'email', 'No existe una cuenta registrada con este correo. Regístrate primero.');
+        return;
       }
 
       spIniciarSesion(cuenta);

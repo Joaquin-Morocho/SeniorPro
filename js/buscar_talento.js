@@ -75,6 +75,41 @@ const profesionales = [
   { nombre: 'Julia E.', oficio: 'Bordadora y Modista', categoria: 'Costura', distrito: 'San Isidro', distancia: 2.0, rating: 5.0, resenas: 29, precio: 38, disponibleHoy: true, verificado: true, avatar: FOTO.w10, descripcion: 'Bordado a mano y arreglos de vestidos de novia y fiesta.', experiencia: 28 }
 ];
 
+// Agrega los servicios publicados por profesionales registrados en este
+// navegador (panel "Mis Servicios" en perfil.html), para que también
+// aparezcan como resultados de búsqueda de talento (RF06-RF12)
+if (typeof spObtenerPublicacionesDeTodosLosProfesionales === 'function') {
+  spObtenerPublicacionesDeTodosLosProfesionales('servicio').forEach(function (pub) {
+    profesionales.push({
+      nombre: pub.duenoNombre,
+      oficio: pub.nombre,
+      categoria: pub.categoria,
+      distrito: pub.distrito,
+      distancia: 0.5,
+      rating: 5.0,
+      resenas: 0,
+      precio: pub.precio,
+      // RF16: se consulta el calendario real que el profesional configuró en su
+      // panel (perfil.html), en vez de mostrar siempre "disponible" a la fuerza.
+      disponibleHoy: (typeof spEstaDisponibleHoy === 'function') ? spEstaDisponibleHoy(pub.duenoId) : true,
+      verificado: false,
+      // La foto de perfil del profesional (si la subió) tiene prioridad sobre
+      // la foto de la publicación como avatar de la persona.
+      avatar: pub.duenoFoto || pub.foto || 'https://placehold.co/300x300/EAF0F7/5B6B85?text=Sin+foto',
+      descripcion: pub.descripcion,
+      experiencia: pub.duenoExperiencia || 0,
+      // Datos completos del perfil del profesional (RF03), usados en "Ver perfil"
+      resumen: pub.duenoResumen || pub.descripcion,
+      formacion: pub.duenoFormacion || '',
+      habilidades: pub.duenoHabilidades || '',
+      direccion: pub.duenoDireccion || '',
+      duenoId: pub.duenoId,
+      duenoCorreo: pub.duenoCorreo,
+      duenoTelefono: pub.duenoTelefono
+    });
+  });
+}
+
 const inputBusqueda = document.getElementById('inputBusqueda');
 const filtroCategoria = document.getElementById('filtroCategoria');
 const filtroDistrito = document.getElementById('filtroDistrito');
@@ -113,6 +148,10 @@ function renderProfesionales(lista) {
       ? '<span class="tag tag--disponible">🟢 Disponible hoy</span>'
       : '';
 
+    const badgeVerificado = pro.verificado
+      ? '<span class="badge-verificado">✓ Verificado</span>'
+      : '';
+
     card.innerHTML =
       '<div class="profesional-header">' +
         '<div class="profesional-persona">' +
@@ -127,7 +166,10 @@ function renderProfesionales(lista) {
             '</div>' +
           '</div>' +
         '</div>' +
-        '<span class="badge-verificado">✓ Verificado</span>' +
+        '<div class="profesional-header-right">' +
+          badgeVerificado +
+          '<button type="button" class="btn-ver-perfil">Ver perfil</button>' +
+        '</div>' +
       '</div>' +
       '<p class="profesional-descripcion">' + escapeHtml(pro.descripcion) + '</p>' +
       '<div class="profesional-tags">' +
@@ -147,6 +189,13 @@ function renderProfesionales(lista) {
   gridProfesionales.querySelectorAll('.btn-contratar').forEach(function (btn, index) {
     btn.addEventListener('click', function () {
       abrirModalContratar(lista[index]);
+    });
+  });
+
+  // Al hacer clic en "Ver perfil" se abre el modal con los datos completos del profesional
+  gridProfesionales.querySelectorAll('.btn-ver-perfil').forEach(function (btn, index) {
+    btn.addEventListener('click', function () {
+      abrirModalVerPerfil(lista[index]);
     });
   });
 }
@@ -310,8 +359,105 @@ formContratar.addEventListener('submit', function (e) {
   // Aquí normalmente se enviaría la solicitud al backend (API) para
   // notificar al profesional y crear el pedido en "Pedidos y Mensajes"
   const nombrePro = profesionalSeleccionado.nombre;
+
+  // Si el profesional es una cuenta real registrada en este navegador (tiene
+  // duenoId), la solicitud le llega a su pestaña "Solicitudes" en perfil.html
+  if (profesionalSeleccionado.duenoId) {
+    spAgregarSolicitud(profesionalSeleccionado.duenoId, {
+      id: Date.now(),
+      cliente: nombre,
+      correo: correo,
+      telefono: telefono,
+      servicio: profesionalSeleccionado.oficio,
+      fecha: spFechaHoyCorta(),
+      estado: 'Pendiente'
+    });
+  }
+
   cerrarModalContratar();
   mostrarModalExito('Notificamos a ' + nombrePro + '. Recibirás su respuesta en breve.');
+});
+
+/* ==========================================================================
+   MODAL: VER PERFIL DEL PROFESIONAL (foto y datos completos antes de contratar)
+   ========================================================================== */
+const modalVerPerfil = document.getElementById('modalVerPerfil');
+
+function abrirModalVerPerfil(pro) {
+  profesionalSeleccionado = pro;
+
+  document.getElementById('modalPerfilAvatar').src = pro.avatar;
+  document.getElementById('modalPerfilAvatar').alt = 'Foto de ' + pro.nombre;
+  document.getElementById('modalPerfilNombre').textContent = pro.nombre;
+  document.getElementById('modalPerfilOficio').textContent = pro.oficio;
+  document.getElementById('modalPerfilEstrellas').textContent = generarEstrellas(pro.rating);
+  document.getElementById('modalPerfilRatingValor').textContent = pro.rating.toFixed(1);
+  document.getElementById('modalPerfilResenas').textContent = '(' + pro.resenas + ')';
+
+  document.getElementById('modalPerfilBadgeVerificado').innerHTML = pro.verificado
+    ? '<span class="badge-verificado">✓ Verificado</span>'
+    : '';
+
+  document.getElementById('modalPerfilResumen').textContent =
+    pro.resumen || pro.descripcion || 'Este profesional aún no agregó una descripción.';
+
+  const tagDisponiblePerfil = pro.disponibleHoy
+    ? '<span class="tag tag--disponible">🟢 Disponible hoy</span>'
+    : '';
+  document.getElementById('modalPerfilTags').innerHTML =
+    '<span class="tag tag--ubicacion">📍 ' + escapeHtml(pro.distrito) + ' · ' + pro.distancia + ' km</span>' +
+    '<span class="tag tag--experiencia">' + escapeHtml(pro.categoria) + ' · ' + pro.experiencia + ' años de experiencia</span>' +
+    tagDisponiblePerfil;
+
+  document.getElementById('modalPerfilFormacion').textContent =
+    (pro.formacion && pro.formacion.trim() !== '') ? pro.formacion : 'No especificado';
+
+  // Habilidades: vienen separadas por comas (guardadas así desde "Editar perfil")
+  const habilidadesLista = (pro.habilidades || '')
+    .split(',')
+    .map(function (h) { return h.trim(); })
+    .filter(Boolean);
+  const wrapHabilidades = document.getElementById('modalPerfilHabilidadesWrap');
+  if (habilidadesLista.length > 0) {
+    document.getElementById('modalPerfilHabilidades').innerHTML = habilidadesLista
+      .map(function (h) { return '<span class="tag tag--experiencia">' + escapeHtml(h) + '</span>'; })
+      .join('');
+    wrapHabilidades.hidden = false;
+  } else {
+    wrapHabilidades.hidden = true;
+  }
+
+  document.getElementById('modalPerfilDireccion').textContent =
+    (pro.direccion && pro.direccion.trim() !== '')
+      ? pro.direccion
+      : 'Por seguridad, este profesional solo comparte su distrito: ' + pro.distrito + '.';
+
+  document.getElementById('modalPerfilPrecio').textContent = 'S/. ' + pro.precio + ' /hora';
+
+  modalVerPerfil.hidden = false;
+}
+
+function cerrarModalVerPerfil() {
+  modalVerPerfil.hidden = true;
+}
+
+document.getElementById('btnCerrarVerPerfil').addEventListener('click', cerrarModalVerPerfil);
+
+// Cierra el modal si se hace clic fuera de la caja (en el fondo oscuro)
+modalVerPerfil.addEventListener('click', function (e) {
+  if (e.target === modalVerPerfil) cerrarModalVerPerfil();
+});
+
+// Cierra el modal con la tecla Escape
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape' && !modalVerPerfil.hidden) cerrarModalVerPerfil();
+});
+
+// Desde el perfil también se puede contratar directamente, sin cerrar y buscar de nuevo
+document.getElementById('btnContratarDesdePerfil').addEventListener('click', function () {
+  const pro = profesionalSeleccionado;
+  cerrarModalVerPerfil();
+  abrirModalContratar(pro);
 });
 
 /* ==========================================================================
